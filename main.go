@@ -9,12 +9,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-bootstrap/go-bootstrap/helpers"
+	"github.com/rickmur/go-bootstrap/helpers"
 )
 
 func setupMySQLDatabase(fullpath string) {
 	// go get github.com/mattes/migrate
-	log.Print("Running go get -u github.com/mattes/migrate...")
+	log.Print("Running migrate installer...")
 	output, err := exec.Command("go", "get", "-u", "github.com/mattes/migrate").CombinedOutput()
 	helpers.ExitOnError(err, string(output))
 
@@ -40,10 +40,28 @@ func setupPGDatabase(fullpath string) {
 	log.Print(string(output))
 }
 
+func setupSQLiteDatabase(fullpath string) {
+	// go get github.com/mattes/migrate
+	log.Print("SQLite template running..")
+	log.Print("Running migrate installer...")
+
+	//output, err := exec.Command("go", "get", "-u", "-d", "github.com/mattes/migrate/cli", "github.com/lib/pq").CombinedOutput()
+	//helpers.ExitOnError(err, string(output))
+	//output2, err2 := exec.Command("go build -tags 'sqlite3' -o /usr/local/bin/migrate github.com/mattes/migrate/cli").CombinedOutput()
+	//helpers.ExitOnError(err2, string(output2))
+
+	// Bootstrap databases.
+	cmd := exec.Command("bash", "scripts/db-bootstrap")
+	cmd.Env = os.Environ()
+	cmd.Dir = fullpath
+	output, _ := cmd.CombinedOutput()
+	log.Print(string(output))
+}
+
 func main() {
 	dirInput := flag.String("dir", "", "Project directory relative to $GOPATH/src/")
 	gopathInput := flag.String("gopath", "", "Choose which $GOPATH to use")
-	templateInput := flag.String("template", "postgresql", "Choose project template. Available options: postgresql, mysql and core")
+	templateInput := flag.String("template", "", "Choose project template. Available options: postgresql, mysql, sqlite and core")
 
 	flag.Parse()
 
@@ -113,6 +131,7 @@ func main() {
 	replacers["$GO_BOOTSTRAP_REPO_NAME"] = repoName
 	replacers["$GO_BOOTSTRAP_REPO_USER"] = repoUser
 	replacers["$GO_BOOTSTRAP_PROJECT_NAME"] = projectName
+	replacers["$GO_BOOTSTRAP_GOPATH"] = gopath + "/src"
 	replacers["$GO_BOOTSTRAP_COOKIE_SECRET"] = helpers.RandString(16)
 	replacers["$GO_BOOTSTRAP_CURRENT_USER"] = helpers.GetCurrentUser()
 	replacers["$GO_BOOTSTRAP_PG_DSN"] = helpers.DefaultPGDSN(dbName)
@@ -127,6 +146,9 @@ func main() {
 	}
 	if *templateInput == "mysql" {
 		setupMySQLDatabase(fullpath)
+	}
+	if *templateInput == "sqlite" {
+		setupSQLiteDatabase(fullpath)
 	}
 
 	// 5. Get all application dependencies for the first time.

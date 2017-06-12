@@ -17,7 +17,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 )
 
-// GetGoPaths returns the GOPATH as an array of paths
+// GoPaths returns the GOPATH as an array of paths
 func GoPaths() []string {
 	return strings.Split(os.Getenv("GOPATH"), ":")
 }
@@ -42,7 +42,7 @@ func GetProjectTemplateDir(projectTemplate string) (string, error) {
 		return ret, nil
 	}
 
-	base := filepath.Join("src", "github.com", "go-bootstrap", "go-bootstrap")
+	base := filepath.Join("src", "github.com", "rickmur", "go-bootstrap")
 
 	// if the project directory can't be found in the executable's dir,
 	// try to locate the source code, it should be there.
