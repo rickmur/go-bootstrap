@@ -18,7 +18,7 @@ func init() {
 }
 
 func newConfig() (*viper.Viper, error) {
-	defaultDSN := strings.Replace("root:@tcp(localhost:3306)/$GO_BOOTSTRAP_PROJECT_NAME?parseTime=true", "-", "_", -1)
+	defaultDSN := strings.Replace("$GO_BOOTSTRAP_GOPATH/$GO_BOOTSTRAP_REPO_NAME/$GO_BOOTSTRAP_REPO_USER/$GO_BOOTSTRAP_PROJECT_NAME/$GO_BOOTSTRAP_PROJECT_NAME.db", "-", "_", -1)
 
 	c := viper.New()
 	c.SetDefault("dsn", defaultDSN)

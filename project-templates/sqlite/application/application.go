@@ -17,7 +17,7 @@ import (
 func New(config *viper.Viper) (*Application, error) {
 	dsn := config.Get("dsn").(string)
 
-	db, err := sqlx.Connect("sqlite", dsn)
+	db, err := sqlx.Connect("sqlite3", dsn)
 	if err != nil {
 		return nil, err
 	}

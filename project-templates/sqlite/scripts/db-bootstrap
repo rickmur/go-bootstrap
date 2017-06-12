@@ -7,8 +7,6 @@ for dbname in "$GO_BOOTSTRAP_PROJECT_NAME" "$GO_BOOTSTRAP_PROJECT_NAME_test"; do
     echo "Creating database $dbname..."
     touch $dbname.db
 
-    echo $SCRIPT_DIR
-
     SQLITE_DSN="sqlite3://$GO_BOOTSTRAP_GOPATH/$GO_BOOTSTRAP_REPO_NAME/$GO_BOOTSTRAP_REPO_USER/$GO_BOOTSTRAP_PROJECT_NAME/$dbname.db"
     echo "Running migrations on '$SQLITE_DSN'..."
     migrate -database "$SQLITE_DSN" -path $SCRIPT_DIR/../migrations up
